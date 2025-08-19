@@ -1,24 +1,7 @@
-// Magical Team Break Tracker - Enhanced Features
-
-const quotes = [
-  "Take a break, recharge your magic! ✨",
-  "Great wizards rest often. 🧙‍♂️",
-  "Even dragons need downtime. 🐉",
-  "Let your spirit fly free for a moment! 🧚",
-  "Elves meditate for their next adventure. 🧝",
-  "Creativity blooms when you pause. 🌸"
-];
-
-const avatars = {
-  wizard: "🧙",
-  elf: "🧝",
-  dragon: "🐉",
-  fairy: "🧚"
-};
-
+// --- Magical Team Break Tracker JS ---
 // Prefilled employees
 const employeeList = [
-  {name: "Asha AS", email: "asha.as@opendoor.com", empid: "010293", shift: "8 pm - 5 am IST"},
+  {name: "Asha AS", email: "asha.as@opendoor.com", empid: "010293", shift: "5 pm - 2 am IST"},
   {name: "Revathi Kumar", email: "revathi.kumar@opendoor.com", empid: "010113", shift: "8 pm - 5 am IST"},
   {name: "Pranesh Krishnamoorthy", email: "pranesh.krishnamoorthy@opendoor.com", empid: "009771", shift: "5 pm - 2 am IST"},
   {name: "Sheeba Rani D", email: "sheeba.rani.d@opendoor.com", empid: "009741", shift: "5 pm - 2 am IST"},
@@ -37,22 +20,27 @@ const employeeList = [
   {name: "Muzammil Ahamed Hussain", email: "muzammil.ahamedhussain@opendoor.com", empid: "010264", shift: "8 pm - 5 am IST"},
   {name: "Srinivasan N", email: "srinivasan.n@opendoor.com", empid: "010266", shift: "8 pm - 5 am IST"},
   {name: "Vinod Kumar", email: "vinod.kumar@opendoor.com", empid: "008459", shift: "8 pm - 5 am IST"},
-  {name: "Sreenath", email: "sreenath.ab@opendoor.com", empid: "008526", shift: "8 pm - 5 am IST"},
+  {name: "Sreenath", email: "sreenath.ab@opendoor.com", empid: "008526", shift: "8 pm - 5 am IST"}
 ];
 
-// Local data
+// Avatar images (avatar1.jpg to avatar15.jpg in assets folder)
+const avatarCount = 15;
+const avatarFiles = Array.from({length: avatarCount}, (_, i) => `avatar${i+1}.jpg`);
+
 let users = JSON.parse(localStorage.getItem('magical_users') || "[]");
 let currentUser = JSON.parse(localStorage.getItem('magical_currentUser') || "null");
-
-// Break timer state
 let breakStartTime = null;
 let breakTimerInterval = null;
 
-function showMotivation() {
-  document.getElementById('motivation').textContent = quotes[Math.floor(Math.random() * quotes.length)];
+// ---- Utility functions ----
+function showSection(sectionId) {
+  document.getElementById('register-section').classList.add('hidden');
+  document.getElementById('login-section').classList.add('hidden');
+  document.getElementById('dashboard-section').classList.add('hidden');
+  document.getElementById(sectionId).classList.remove('hidden');
 }
 
-// Prefill employee data on registration
+// ---- Registration Page Setup ----
 function populateEmployeeDropdown() {
   const select = document.getElementById('employee-select');
   employeeList.forEach((emp, i) => {
@@ -61,6 +49,25 @@ function populateEmployeeDropdown() {
     option.textContent = `${emp.name} (${emp.empid})`;
     select.appendChild(option);
   });
+}
+
+// Render avatar image options from assets/avatar1.jpg ... avatar15.jpg
+function renderAvatarOptions(selectedFile) {
+  const container = document.querySelector('.avatar-options');
+  container.innerHTML = "";
+  avatarFiles.forEach(file => {
+    const img = document.createElement('img');
+    img.className = "avatar-choice" + (selectedFile === file ? " selected" : "");
+    img.src = `assets/${file}`;
+    img.alt = file;
+    img.title = file.replace('.jpg', '').replace('_', ' ');
+    img.onclick = () => selectAvatar(file);
+    container.appendChild(img);
+  });
+}
+function selectAvatar(file) {
+  document.getElementById('reg-avatar').value = file;
+  renderAvatarOptions(file);
 }
 function prefillEmployee() {
   const idx = document.getElementById('employee-select').value;
@@ -78,7 +85,7 @@ function prefillEmployee() {
   document.getElementById('reg-shift').value = emp.shift;
 }
 
-// Registration
+// ---- Registration & Login ----
 function register() {
   const name = document.getElementById('reg-name').value.trim();
   const email = document.getElementById('reg-email').value.trim();
@@ -87,7 +94,7 @@ function register() {
   const password = document.getElementById('reg-password').value;
   const avatar = document.getElementById('reg-avatar').value;
 
-  if(!name || !email || !empid || !shift || !password) {
+  if(!name || !email || !empid || !shift || !password || !avatar) {
     alert("Please fill all fields!");
     return;
   }
@@ -103,15 +110,9 @@ function register() {
   users.push(user);
   localStorage.setItem('magical_users', JSON.stringify(users));
   alert("Registered! Please log in.");
-  document.getElementById('reg-name').value = "";
-  document.getElementById('reg-email').value = "";
-  document.getElementById('reg-empid').value = "";
-  document.getElementById('reg-shift').value = "";
-  document.getElementById('reg-password').value = "";
-  document.getElementById('employee-select').value = "";
+  showSection('login-section');
 }
 
-// Login
 function login() {
   const usernameOrEmail = document.getElementById('login-username').value.trim();
   const password = document.getElementById('login-password').value;
@@ -122,23 +123,22 @@ function login() {
     alert("Invalid credentials!");
     return;
   }
-  // Add login time to user history
   user.loginHistory.push(new Date().toISOString());
   users = users.map(u => u.email === user.email ? user : u);
   localStorage.setItem('magical_users', JSON.stringify(users));
   currentUser = user;
   localStorage.setItem('magical_currentUser', JSON.stringify(currentUser));
-  showDashboard();
+  showSection('dashboard-section');
+  renderDashboard();
 }
 
-// Logout
 function logout() {
   currentUser = null;
   localStorage.setItem('magical_currentUser', "null");
-  showAuth();
+  showSection('login-section');
 }
 
-// Break timer
+// ---- Break Timer ----
 function startBreak() {
   breakStartTime = new Date();
   document.getElementById('start-break').classList.add('hidden');
@@ -158,13 +158,11 @@ function endBreak() {
   if(!breakStartTime) return;
   const endTime = new Date();
   const duration = Math.floor((endTime - breakStartTime) / 1000); // in seconds
-  // Save break record
   currentUser.breaks.push({
     start: breakStartTime.toISOString(),
     end: endTime.toISOString(),
     duration
   });
-  // Update users array and local storage
   users = users.map(u => u.email === currentUser.email ? currentUser : u);
   localStorage.setItem('magical_users', JSON.stringify(users));
   localStorage.setItem('magical_currentUser', JSON.stringify(currentUser));
@@ -177,107 +175,106 @@ function endBreak() {
   alert("Break ended and recorded!");
 }
 
-// Show authentication section
-function showAuth() {
-  document.getElementById('auth-section').classList.remove('hidden');
-  document.getElementById('dashboard').classList.add('hidden');
-  showMotivation();
-}
-
-// Show dashboard section
-function showDashboard() {
-  document.getElementById('auth-section').classList.add('hidden');
-  document.getElementById('dashboard').classList.remove('hidden');
-  document.getElementById('break-controls').style.display = "block";
-  document.getElementById('start-break').classList.remove('hidden');
-  document.getElementById('end-break').classList.add('hidden');
-  document.getElementById('break-timer').textContent = "";
-  renderDashboard();
-  showMotivation();
-}
-
-// Calculate allotted break time (simple: 1 hour if shift >=9 hours)
-function getAllowedBreakMins(shiftStr) {
-  const match = shiftStr.match(/(\d{1,2})\s*(am|pm).*(\d{1,2})\s*(am|pm)/i);
-  if (!match) return 60; // default 1 hour
-  let [_, startHour, startPeriod, endHour, endPeriod] = match;
-  startHour = parseInt(startHour);
-  endHour = parseInt(endHour);
-  if(startPeriod.toLowerCase() === "pm" && startHour !== 12) startHour += 12;
-  if(endPeriod.toLowerCase() === "pm" && endHour !== 12) endHour += 12;
-  // Overnight shifts
-  let duration = endHour - startHour;
-  if(duration <= 0) duration += 24;
-  return duration >= 9 ? 60 : 45; // 1 hr for >=9hr, else 45min
-}
-
-// Render team dashboard grid
+// ---- Dashboard ----
 function renderDashboard() {
-  const grid = document.getElementById('team-grid');
-  grid.innerHTML = "";
+  // Set default filter values
+  document.getElementById('filter-user').value = currentUser ? currentUser.name : "";
+  document.getElementById('filter-date').value = new Date().toISOString().slice(0,10);
+
+  // Render user breaks and login history table for filtered user/date
   const filterUser = document.getElementById('filter-user').value.trim().toLowerCase();
   const filterDate = document.getElementById('filter-date').value;
-  
-  users
-    .filter(u => 
+  let filteredUsers = users.filter(u => 
+    u.name.toLowerCase().includes(filterUser) ||
+    u.email.toLowerCase().includes(filterUser) ||
+    u.empid.toLowerCase().includes(filterUser)
+  );
+  if(filteredUsers.length === 0) filteredUsers = [currentUser];
+
+  let html = "";
+  filteredUsers.forEach(u => {
+    // Breaks for filtered date
+    let breaksToday = u.breaks;
+    if(filterDate) {
+      breaksToday = u.breaks.filter(b => b.start.slice(0,10) === filterDate);
+    }
+    let loginToday = u.loginHistory.filter(dt => dt.slice(0,10) === filterDate);
+
+    html += `<div class="dashboard-user">
+      <img class="dashboard-avatar" src="assets/${u.avatar}" alt="${u.avatar}">
+      <b>${u.name}</b> <small>(${u.empid})</small><br>
+      <span style="font-size:0.97em;">Shift: ${u.shift}</span><br>
+      <span style="font-size:0.97em;">Logins: ${loginToday.length}</span>
+      <div>
+        <table class="break-table">
+          <tr>
+            <th>#</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Duration (min)</th>
+          </tr>
+          ${
+            breaksToday.length === 0 ? 
+            `<tr><td colspan="4">No breaks</td></tr>` :
+            breaksToday.map((b,i) =>
+              `<tr>
+                <td>${i+1}</td>
+                <td>${new Date(b.start).toLocaleTimeString()}</td>
+                <td>${new Date(b.end).toLocaleTimeString()}</td>
+                <td>${(b.duration/60).toFixed(2)}</td>
+              </tr>`
+            ).join("")
+          }
+        </table>
+        <span style="font-size:0.97em;">Total break: ${(breaksToday.reduce((sum,b)=>sum+b.duration,0)/60).toFixed(2)} min</span>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('dashboard-content').innerHTML = html;
+}
+
+// ---- CSV Download ----
+function downloadCSV() {
+  const filterUser = document.getElementById('filter-user').value.trim().toLowerCase();
+  const filterDate = document.getElementById('filter-date').value;
+  let csv = "Name,EmpID,Shift,Date,Start,End,Duration(min)\n";
+  users.forEach(u => {
+    if (
       u.name.toLowerCase().includes(filterUser) ||
       u.email.toLowerCase().includes(filterUser) ||
       u.empid.toLowerCase().includes(filterUser)
-    )
-    .forEach(u => {
-      // Get breaks for filtered date
+    ) {
       let breaksToday = u.breaks;
-      let totalBreakSecs = 0;
-      let breakListHTML = "";
       if(filterDate) {
         breaksToday = u.breaks.filter(b => b.start.slice(0,10) === filterDate);
       }
-      totalBreakSecs = breaksToday.reduce((sum, b) => sum + b.duration, 0);
-      breakListHTML = breaksToday.map((b, idx) => {
-        const start = new Date(b.start), end = new Date(b.end);
-        return `<li>Break ${idx+1}: ${start.toLocaleTimeString()} - ${end.toLocaleTimeString()} (${Math.floor(b.duration/60)} min ${b.duration%60} sec)</li>`;
-      }).join("");
-      // Shift and allowed break info
-      const allowedBreakMin = getAllowedBreakMins(u.shift);
-      // Login history for filtered date
-      let loginListHTML = "";
-      let loginsForDay = u.loginHistory;
-      if(filterDate) {
-        loginsForDay = u.loginHistory.filter(dt => dt.slice(0,10) === filterDate);
+      breaksToday.forEach(b => {
+        csv += `"${u.name}","${u.empid}","${u.shift}","${b.start.slice(0,10)}","${new Date(b.start).toLocaleTimeString()}","${new Date(b.end).toLocaleTimeString()}",${(b.duration/60).toFixed(2)}\n`;
+      });
+      if(breaksToday.length === 0) {
+        csv += `"${u.name}","${u.empid}","${u.shift}","${filterDate}","","",0\n`;
       }
-      loginListHTML = loginsForDay.map((dt, idx) => `<li>Login ${idx+1}: ${new Date(dt).toLocaleString()}</li>`).join("");
-      grid.innerHTML += `
-        <div class="team-member">
-          <div class="avatar-img">${avatars[u.avatar] || "🧙"}</div>
-          <div><strong>${u.name}</strong> <small>(${u.empid})</small></div>
-          <div>${u.email}</div>
-          <div class="shift-info">
-            Shift: ${u.shift} <br>
-            Allowed Break: ${allowedBreakMin} min
-          </div>
-          <div>
-            <strong>Breaks on ${filterDate || "all days"}:</strong>
-            <ul class="break-list">
-              ${breakListHTML || "<li>No breaks recorded</li>"}
-            </ul>
-            <div>Total break: ${Math.floor(totalBreakSecs/60)} min ${totalBreakSecs%60} sec</div>
-            <div>${totalBreakSecs/60 >= allowedBreakMin ? "✅ Full break quota availed!" : "🕒 Break quota remaining"}</div>
-          </div>
-          <div>
-            <strong>Logins on ${filterDate || "all days"}:</strong>
-            <ul class="login-list">
-              ${loginListHTML || "<li>No login recorded</li>"}
-            </ul>
-          </div>
-        </div>
-      `;
-    });
+    }
+  });
+  const blob = new Blob([csv], {type:"text/csv"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = "breaks.csv";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);}, 100);
 }
 
-// On load, show correct section and populate dropdown
+// ---- On Load ----
 window.onload = function() {
   populateEmployeeDropdown();
-  if(currentUser) showDashboard();
-  else showAuth();
-  showMotivation();
+  renderAvatarOptions("avatar1.jpg");
+  if(currentUser) {
+    showSection('dashboard-section');
+    renderDashboard();
+  } else {
+    showSection('login-section');
+  }
 };
