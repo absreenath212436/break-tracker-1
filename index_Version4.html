@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Magical Team Break Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>✨ Magical Team Break Tracker ✨</h1>
+      <p id="motivation"></p>
+    </header>
+
+    <section id="auth-section">
+      <div id="register-form">
+        <h2>Register</h2>
+        <select id="employee-select" onchange="prefillEmployee()">
+          <option value="">-- Select Prefilled Employee --</option>
+        </select>
+        <input type="text" id="reg-name" placeholder="Name">
+        <input type="email" id="reg-email" placeholder="Email">
+        <input type="text" id="reg-empid" placeholder="Employee ID">
+        <input type="text" id="reg-shift" placeholder="Shift Timing (e.g., 8 pm - 5 am IST)">
+        <input type="password" id="reg-password" placeholder="Password">
+        <select id="reg-avatar">
+          <option value="wizard">🧙 Wizard</option>
+          <option value="elf">🧝 Elf</option>
+          <option value="dragon">🐉 Dragon</option>
+          <option value="fairy">🧚 Fairy</option>
+        </select>
+        <button onclick="register()">Register</button>
+      </div>
+      <div id="login-form">
+        <h2>Login</h2>
+        <input type="text" id="login-username" placeholder="Name or Email">
+        <input type="password" id="login-password" placeholder="Password">
+        <button onclick="login()">Login</button>
+      </div>
+    </section>
+
+    <section id="dashboard" class="hidden">
+      <h2>Team Break Dashboard</h2>
+      <button onclick="logout()">Logout</button>
+      <div>
+        <label>Filter by User:</label>
+        <input type="text" id="filter-user" placeholder="Type name/email..." oninput="renderDashboard()">
+        <label>Filter by Date:</label>
+        <input type="date" id="filter-date" onchange="renderDashboard()">
+      </div>
+      <div id="break-controls">
+        <button id="start-break" onclick="startBreak()" class="hidden">✨ Start Break</button>
+        <button id="end-break" onclick="endBreak()" class="hidden">End Break</button>
+        <span id="break-timer"></span>
+      </div>
+      <div id="team-grid"></div>
+    </section>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

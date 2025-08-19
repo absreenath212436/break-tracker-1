@@ -1,0 +1,113 @@
+body {
+  font-family: 'Segoe UI', 'Comic Sans MS', cursive, sans-serif;
+  margin: 0;
+  background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+  color: #333;
+  min-height: 100vh;
+  animation: bgShift 10s infinite alternate;
+}
+
+@keyframes bgShift {
+  from {background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);}
+  to   {background: linear-gradient(135deg, #fbc2eb 0%, #a18cd1 100%);}
+}
+
+.container {
+  max-width: 700px;
+  margin: auto;
+  background: rgba(255,255,255,0.8);
+  border-radius: 18px;
+  box-shadow: 0 0 32px #c471f5;
+  padding: 32px;
+  margin-top: 32px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+h1 {
+  font-size: 2.2em;
+  margin-bottom: 0.2em;
+  text-shadow: 0 0 8px #fff, 0 0 24px #d4fc79;
+}
+
+input, select, button {
+  display: block;
+  width: 90%;
+  margin: 10px auto;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 0 5px #fbc2eb;
+}
+
+label {
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+button {
+  background: linear-gradient(90deg, #fbc2eb 0%, #a6c1ee 100%);
+  color: #333;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: linear-gradient(90deg, #a6c1ee 0%, #fbc2eb 100%);
+}
+
+.hidden {
+  display: none;
+}
+
+#team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.team-member {
+  background: linear-gradient(120deg, #fbc2eb 0%, #a6c1ee 100%);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 0 8px #a18cd1;
+  animation: glow 1.5s infinite alternate;
+}
+
+@keyframes glow {
+  from {box-shadow: 0 0 8px #a18cd1;}
+  to {box-shadow: 0 0 24px #fbc2eb;}
+}
+
+.avatar-img {
+  font-size: 2.5em;
+  margin-bottom: 8px;
+}
+
+.break-list {
+  font-size: 0.95em;
+  margin: 8px 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.shift-info {
+  font-size: 0.95em;
+  margin-top: 8px;
+  background: #fff7;
+  border-radius: 8px;
+  padding: 8px 4px;
+}
+
+.login-list {
+  font-size: 0.9em;
+  margin: 8px 0;
+  padding-left: 0;
+  list-style: none;
+}
