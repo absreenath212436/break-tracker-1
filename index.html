@@ -2,59 +2,61 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Magical Team Break Tracker</title>
+  <title>✨ Magical Team Break Tracker ✨</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
     <header>
       <h1>✨ Magical Team Break Tracker ✨</h1>
-      <p id="motivation"></p>
+      <p class="motivation">Even dragons need downtime. 🐉</p>
     </header>
-
-    <section id="auth-section">
-      <div id="register-form">
+    <main>
+      <section id="register-section">
         <h2>Register</h2>
-        <select id="employee-select" onchange="prefillEmployee()">
-          <option value="">-- Select Prefilled Employee --</option>
+        <select id="employee-select" class="input" onchange="prefillEmployee()">
+          <option value="">Select Employee</option>
         </select>
-        <input type="text" id="reg-name" placeholder="Name">
-        <input type="email" id="reg-email" placeholder="Email">
-        <input type="text" id="reg-empid" placeholder="Employee ID">
-        <input type="text" id="reg-shift" placeholder="Shift Timing (e.g., 8 pm - 5 am IST)">
-        <input type="password" id="reg-password" placeholder="Password">
-        <select id="reg-avatar">
-          <option value="wizard">🧙 Wizard</option>
-          <option value="elf">🧝 Elf</option>
-          <option value="dragon">🐉 Dragon</option>
-          <option value="fairy">🧚 Fairy</option>
-        </select>
-        <button onclick="register()">Register</button>
-      </div>
-      <div id="login-form">
+        <input type="text" id="reg-name" placeholder="Name" class="input">
+        <input type="email" id="reg-email" placeholder="Email" class="input">
+        <input type="text" id="reg-empid" placeholder="Employee ID" class="input">
+        <input type="text" id="reg-shift" placeholder="Shift Timing (e.g., 8 pm - 5 am IST)" class="input">
+        <input type="password" id="reg-password" placeholder="Password" class="input">
+        <div id="avatar-selection">
+          <label style="font-weight:bold;">Select Your Avatar:</label>
+          <div class="avatar-options"></div>
+          <input type="hidden" id="reg-avatar" value="avatar1.jpg">
+        </div>
+        <button class="btn gradient" onclick="register()">Register</button>
+        <p class="switch-link">Already registered? <span onclick="showSection('login-section')" style="color:#6a2c70;cursor:pointer;text-decoration:underline;">Login here</span></p>
+      </section>
+      <section id="login-section" class="hidden">
         <h2>Login</h2>
-        <input type="text" id="login-username" placeholder="Name or Email">
-        <input type="password" id="login-password" placeholder="Password">
-        <button onclick="login()">Login</button>
-      </div>
-    </section>
-
-    <section id="dashboard" class="hidden">
-      <h2>Team Break Dashboard</h2>
-      <button onclick="logout()">Logout</button>
-      <div>
-        <label>Filter by User:</label>
-        <input type="text" id="filter-user" placeholder="Type name/email..." oninput="renderDashboard()">
-        <label>Filter by Date:</label>
-        <input type="date" id="filter-date" onchange="renderDashboard()">
-      </div>
-      <div id="break-controls">
-        <button id="start-break" onclick="startBreak()" class="hidden">✨ Start Break</button>
-        <button id="end-break" onclick="endBreak()" class="hidden">End Break</button>
-        <span id="break-timer"></span>
-      </div>
-      <div id="team-grid"></div>
-    </section>
+        <input type="text" id="login-username" placeholder="Name or Email" class="input">
+        <input type="password" id="login-password" placeholder="Password" class="input">
+        <button class="btn gradient" onclick="login()">Login</button>
+        <p class="switch-link">New user? <span onclick="showSection('register-section')" style="color:#6a2c70;cursor:pointer;text-decoration:underline;">Register here</span></p>
+      </section>
+      <section id="dashboard-section" class="hidden">
+        <h2>Team Break Dashboard</h2>
+        <button class="btn gradient" onclick="logout()">Logout</button>
+        <div class="filter-row">
+          <label>Filter by User:</label>
+          <input type="text" id="filter-user" class="input" oninput="renderDashboard()">
+        </div>
+        <div class="filter-row">
+          <label>Filter by Date:</label>
+          <input type="date" id="filter-date" class="input" onchange="renderDashboard()">
+        </div>
+        <div id="break-controls">
+          <button class="btn gradient" id="start-break" onclick="startBreak()">✨ Start Break</button>
+          <button class="btn gradient hidden" id="end-break" onclick="endBreak()">End Break</button>
+          <span id="break-timer" style="margin-left:10px;"></span>
+        </div>
+        <button class="btn gradient" style="margin-top:14px;" onclick="downloadCSV()">Download Breaks CSV</button>
+        <div id="dashboard-content"></div>
+      </section>
+    </main>
   </div>
   <script src="app.js"></script>
 </body>
