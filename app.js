@@ -1,3 +1,13 @@
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyC155NEtYw5sh3n7I65Qc-SXpOutOlzoIk",
+  authDomain: "break-tracker---1.firebaseapp.com",
+  projectId: "break-tracker---1",
+  storageBucket: "break-tracker---1.firebasestorage.app",
+  messagingSenderId: "212859798774",
+  appId: "1:212859798774:web:0e4e4fc87f42edc93698d7",
+  measurementId: "G-N456D373FP"
+};
 // --- Magical Team Break Tracker JS ---
 // Prefilled employees
 const employeeList = [
