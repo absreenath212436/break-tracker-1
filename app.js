@@ -278,3 +278,154 @@ window.onload = function() {
     showSection('login-section');
   }
 };
+// ... (rest of your code above stays the same)
+
+// ---- Break Timer ----
+function startBreak() {
+  breakStartTime = new Date();
+  currentUser.currentBreakStart = breakStartTime.toISOString();
+  saveUsers();
+  renderDashboard();
+  document.getElementById('start-break').classList.add('hidden');
+  document.getElementById('end-break').classList.remove('hidden');
+  breakTimerInterval = setInterval(updateBreakTimer, 1000);
+}
+
+function updateBreakTimer() {
+  if (breakStartTime) {
+    const now = new Date();
+    const diff = Math.floor((now - breakStartTime) / 1000);
+    const min = Math.floor(diff / 60), sec = diff % 60;
+    document.getElementById('break-timer').textContent = `Break duration: ${min} min ${sec} sec`;
+    renderDashboard(); // live update for team
+  }
+}
+
+function endBreak() {
+  if (!breakStartTime && !currentUser.currentBreakStart) return;
+  const endTime = new Date();
+  let startTime = breakStartTime ? breakStartTime : new Date(currentUser.currentBreakStart);
+  const duration = Math.floor((endTime - startTime) / 1000);
+  currentUser.breaks.push({
+    start: startTime.toISOString(),
+    end: endTime.toISOString(),
+    duration
+  });
+  delete currentUser.currentBreakStart;
+  saveUsers();
+  breakStartTime = null;
+  clearInterval(breakTimerInterval);
+  document.getElementById('start-break').classList.remove('hidden');
+  document.getElementById('end-break').classList.add('hidden');
+  document.getElementById('break-timer').textContent = "";
+  renderDashboard();
+  alert("Break ended and recorded!");
+}
+
+// --- Utility to save users everywhere ---
+function saveUsers() {
+  users = users.map(u => u.email === currentUser.email ? currentUser : u);
+  localStorage.setItem('magical_users', JSON.stringify(users));
+  localStorage.setItem('magical_currentUser', JSON.stringify(currentUser));
+}
+
+// ---- Dashboard: show all users, live status ----
+function renderDashboard() {
+  // Filters
+  const filterUser = document.getElementById('filter-user').value.trim().toLowerCase();
+  const filterDate = document.getElementById('filter-date').value;
+  let filteredUsers = users.filter(u =>
+    u.name.toLowerCase().includes(filterUser) ||
+    u.email.toLowerCase().includes(filterUser) ||
+    u.empid.toLowerCase().includes(filterUser)
+  );
+  if (filteredUsers.length === 0) filteredUsers = [currentUser];
+
+  let html = "";
+  filteredUsers.forEach(u => {
+    // Status
+    let status = "Working";
+    let statusColor = "#7ed957";
+    let breakDuration = "";
+    if (u.currentBreakStart) {
+      status = "On Break";
+      statusColor = "#fbc2eb";
+      const start = new Date(u.currentBreakStart);
+      const now = new Date();
+      const diff = Math.floor((now - start) / 1000);
+      breakDuration = ` (${Math.floor(diff / 60)} min ${diff % 60} sec)`;
+    }
+
+    // Breaks for filtered date
+    let breaksToday = u.breaks;
+    if (filterDate) {
+      breaksToday = u.breaks.filter(b => b.start.slice(0, 10) === filterDate);
+    }
+    let loginToday = u.loginHistory.filter(dt => dt.slice(0, 10) === filterDate);
+
+    html += `<div class="dashboard-user">
+      <img class="dashboard-avatar" src="assets/${u.avatar}" alt="${u.avatar}">
+      <b>${u.name}</b> <small>(${u.empid})</small>
+      <span style="font-size:0.97em;">Shift: ${u.shift}</span>
+      <span style="margin-left:8px;color:${statusColor};font-weight:bold;">
+        ${status}${breakDuration}
+      </span><br>
+      <span style="font-size:0.97em;">Logins: ${loginToday.length}</span>
+      <div>
+        <table class="break-table">
+          <tr>
+            <th>#</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Duration (min)</th>
+          </tr>
+          ${
+            breaksToday.length === 0 ?
+              `<tr><td colspan="4">No breaks</td></tr>` :
+              breaksToday.map((b, i) =>
+                `<tr>
+                  <td>${i + 1}</td>
+                  <td>${new Date(b.start).toLocaleTimeString()}</td>
+                  <td>${new Date(b.end).toLocaleTimeString()}</td>
+                  <td>${(b.duration / 60).toFixed(2)}</td>
+                </tr>`
+              ).join("")
+          }
+        </table>
+        <span style="font-size:0.97em;">Total break: ${(breaksToday.reduce((sum, b) => sum + b.duration, 0) / 60).toFixed(2)} min</span>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('dashboard-content').innerHTML = html;
+
+  // Show break buttons only for current user
+  if (currentUser.currentBreakStart) {
+    document.getElementById('start-break').classList.add('hidden');
+    document.getElementById('end-break').classList.remove('hidden');
+    document.getElementById('break-timer').textContent = "";
+  } else {
+    document.getElementById('start-break').classList.remove('hidden');
+    document.getElementById('end-break').classList.add('hidden');
+    document.getElementById('break-timer').textContent = "";
+  }
+}
+
+// ---- On Load: restore active break if needed ----
+window.onload = function () {
+  populateEmployeeDropdown();
+  renderAvatarOptions("avatar1.jpg");
+  if (currentUser) {
+    // Resume break if was active
+    if (currentUser.currentBreakStart) {
+      breakStartTime = new Date(currentUser.currentBreakStart);
+      document.getElementById('start-break').classList.add('hidden');
+      document.getElementById('end-break').classList.remove('hidden');
+      breakTimerInterval = setInterval(updateBreakTimer, 1000);
+    }
+    showSection('dashboard-section');
+    renderDashboard();
+  } else {
+    showSection('login-section');
+  }
+};
