@@ -1,25 +1,20 @@
 body {
-  font-family: 'Segoe UI', 'Comic Sans MS', cursive, sans-serif;
   margin: 0;
-  background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
-  color: #333;
   min-height: 100vh;
-  animation: bgShift 10s infinite alternate;
-}
-
-@keyframes bgShift {
-  from {background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);}
-  to   {background: linear-gradient(135deg, #fbc2eb 0%, #a18cd1 100%);}
+  font-family: 'Comic Sans MS', 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .container {
-  max-width: 700px;
+  width: 500px;
   margin: auto;
-  background: rgba(255,255,255,0.8);
-  border-radius: 18px;
-  box-shadow: 0 0 32px #c471f5;
-  padding: 32px;
-  margin-top: 32px;
+  background: rgba(255,255,255,0.85);
+  border-radius: 32px;
+  box-shadow: 0 0 40px #a18cd1;
+  padding: 32px 40px;
 }
 
 header {
@@ -28,35 +23,57 @@ header {
 }
 
 h1 {
-  font-size: 2.2em;
-  margin-bottom: 0.2em;
+  font-size: 2rem;
+  color: #333;
   text-shadow: 0 0 8px #fff, 0 0 24px #d4fc79;
+  margin-bottom: 0.3em;
 }
 
-input, select, button {
-  display: block;
-  width: 90%;
-  margin: 10px auto;
-  padding: 10px;
-  border-radius: 8px;
+.motivation {
+  font-size: 1.2em;
+  color: #6a2c70;
+}
+
+main section {
+  margin-bottom: 32px;
+}
+
+h2 {
+  font-size: 1.3em;
+  color: #222;
+  margin-bottom: 10px;
+  font-family: inherit;
+}
+
+.input, select {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 12px;
   border: none;
-  box-shadow: 0 0 5px #fbc2eb;
+  font-size: 1em;
+  background: #f5f5fa;
+  box-shadow: 0 0 6px #fbc2eb;
 }
 
-label {
+.btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  font-size: 1.05em;
   font-weight: bold;
-  margin-right: 8px;
+  margin: 12px 0;
+  cursor: pointer;
 }
 
-button {
+.gradient {
   background: linear-gradient(90deg, #fbc2eb 0%, #a6c1ee 100%);
   color: #333;
-  font-weight: bold;
-  cursor: pointer;
+  box-shadow: 0 0 8px #fbc2eb;
   transition: background 0.2s;
 }
-
-button:hover {
+.gradient:hover {
   background: linear-gradient(90deg, #a6c1ee 0%, #fbc2eb 100%);
 }
 
@@ -64,50 +81,75 @@ button:hover {
   display: none;
 }
 
-#team-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
-  margin-top: 24px;
+.filter-row {
+  margin-bottom: 10px;
 }
 
-.team-member {
-  background: linear-gradient(120deg, #fbc2eb 0%, #a6c1ee 100%);
-  border-radius: 12px;
-  padding: 16px;
-  text-align: center;
+.avatar-options {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.avatar-choice {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  background: #fbc2eb;
+  border: 2px solid transparent;
   box-shadow: 0 0 8px #a18cd1;
-  animation: glow 1.5s infinite alternate;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  object-fit: cover;
 }
-
-@keyframes glow {
-  from {box-shadow: 0 0 8px #a18cd1;}
-  to {box-shadow: 0 0 24px #fbc2eb;}
+.avatar-choice.selected {
+  border-color: #a18cd1;
+  box-shadow: 0 0 12px #a6c1ee;
+  background: #a6c1ee;
 }
-
-.avatar-img {
-  font-size: 2.5em;
-  margin-bottom: 8px;
-}
-
-.break-list {
-  font-size: 0.95em;
-  margin: 8px 0;
-  padding-left: 0;
-  list-style: none;
-}
-
-.shift-info {
-  font-size: 0.95em;
+.switch-link {
+  text-align: center;
   margin-top: 8px;
-  background: #fff7;
-  border-radius: 8px;
-  padding: 8px 4px;
+  font-size: 0.96em;
 }
 
-.login-list {
-  font-size: 0.9em;
-  margin: 8px 0;
-  padding-left: 0;
-  list-style: none;
+.break-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 18px;
+  background: #f5f5fa;
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 0.98em;
+}
+.break-table th, .break-table td {
+  border: 1px solid #e2e2e2;
+  padding: 8px;
+  text-align: center;
+}
+.break-table th {
+  background: #e9dff7;
+  color: #6a2c70;
+}
+.break-table td {
+  background: #fff;
+}
+
+.dashboard-user {
+  margin-top: 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e2e2e2;
+}
+.dashboard-user:last-child {
+  border-bottom: none;
+}
+.dashboard-avatar {
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  vertical-align: middle;
+  object-fit: cover;
+  margin-right: 12px;
+  box-shadow: 0 0 8px #a18cd1;
 }
